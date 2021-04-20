@@ -10,7 +10,7 @@ def login_view(request):
 
 def register_view(request):
     if request.method == "GET":
-        return render("register.html")
+        return render(request, "register.html")
     if request.method == "POST":
         user = request.POST["user"]
         password = request.POST["password"]

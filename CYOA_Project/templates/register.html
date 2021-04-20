@@ -1,5 +1,13 @@
 {% extends layout.html %}
+{% block title %}Register{% endblock %}
 
 {% block body %}
-
+<form action="{% url 'register' %}" method="POST">
+    {% csrf_token %}
+    <input name=username placeholder=Username>
+    <input name=email placeholder=E-mail>
+    <input name=password placeholder=Password>
+    <input name=confirm placeholder="Confirm password">
+    <input type=submit>
+</form>
 {% endblock %}
