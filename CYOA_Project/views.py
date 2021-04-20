@@ -6,13 +6,27 @@ from django.urls import reverse
 from django import forms
 
 def login_view(request):
-    pass
+    if request.method == "GET":
+        return render(request, "login.html")
+    elif request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            return render(request, "error.html",
+            {
+                "message": "No such user"
+            })
+        
 
 def register_view(request):
     if request.method == "GET":
         return render(request, "register.html")
     if request.method == "POST":
-        user = request.POST["user"]
+        username = request.POST["username"]
         password = request.POST["password"]
         confirm = request.POST["confirm"]
         email = request.POST["email"]
@@ -23,5 +37,5 @@ def register_view(request):
             user.save()
         except IntegrityError:
             pass
-        login(request.user)
+        login(request, user)
         return HttpResponseRedirect(reverse('index'))
