@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User
+from models import User
 
 def index_view(request):
     return render(request, "index.html")
