@@ -4,6 +4,18 @@
     <title>{% block title %}Choose Your Own {% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <body>
+        <nav id=navigation>
+            <a href="{% url 'index'}">Choose Your Own</a>
+            {% if request.user.is_authenticated}
+                <form action="{% url 'logout %}" method=GET>
+                    {% csrf_token %}
+                    <input type=button value="Log out">
+                </form>
+            {% else %} 
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </nav>
         {% block body %}
         {% endblock %}
     </body>

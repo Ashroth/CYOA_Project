@@ -4,6 +4,10 @@ from django.db import IntegrityError
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+from .models import User
+
+def index_view(request):
+    return render(request, "index.html")
 
 def login_view(request):
     if request.method == "GET":
@@ -20,7 +24,10 @@ def login_view(request):
             {
                 "message": "No such user"
             })
-        
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('index'))        
 
 def register_view(request):
     if request.method == "GET":
