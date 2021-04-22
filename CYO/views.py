@@ -7,7 +7,7 @@ from django import forms
 from .models import User
 
 def index_view(request):
-    return render(request, "index.html")
+    return render(request, "CYO/index.html")
 
 def login_view(request):
     if request.method == "GET":
@@ -20,7 +20,7 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse('index'))
         else:
-            return render(request, "error.html",
+            return render(request, "CYO/error.html",
             {
                 "message": "No such user"
             })
@@ -31,7 +31,7 @@ def logout_view(request):
 
 def register_view(request):
     if request.method == "GET":
-        return render(request, "register.html")
+        return render(request, "CYO/register.html")
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]

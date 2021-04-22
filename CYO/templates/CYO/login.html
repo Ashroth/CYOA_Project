@@ -1,4 +1,4 @@
-{% extends layout.html %}
+{% extends 'CYO/layout.html' %}
 {% block body %}
 <form action="{% url 'login' %}" method=POST>
     {% csrf_token %}
