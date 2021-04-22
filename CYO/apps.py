@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class CyoConfig(AppConfig):
+class CYOConfig(AppConfig):
     name = 'CYO'
