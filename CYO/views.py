@@ -4,10 +4,40 @@ from django.db import IntegrityError
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User
+from .models import User, Adventure, Event, Choice
+
+class new_Adventure(forms.ModelForm):
+    class Meta:
+        model = Adventure
+        exclude = ["user", "startevent"]
+        fields = ["title", "description"]
+
+class new_Event(forms.ModelForm):
+    class Meta:
+        model = Event
+        exclude = ["adventure"]
+        fields = ["title", "text"]
 
 def index_view(request):
     return render(request, "CYO/index.html")
+
+def create_view(request):
+    if request.method == "GET":
+        form = new_Adventure()
+        return render(request, "CYO/create.html", {
+            "form": form
+        })
+    elif request.method == "POST":
+        adventure = new_Adventure(request.post)
+        if adventure.is_valid:
+            adventure.save(commit=False)
+            adventure.user = request.user
+            adventure.save()
+            first_event = new_Event()
+            first_event.title = adventure.title
+            first_event.adventure = adventure
+            first_event.text = adventure.description
+        pass
 
 def login_view(request):
     if request.method == "GET":

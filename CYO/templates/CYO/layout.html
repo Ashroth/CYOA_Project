@@ -6,10 +6,7 @@
         <nav id=navigation>
             <a href="{% url 'index'}">Choose Your Own</a>
             {% if request.user.is_authenticated %}
-                <form action="{% url 'logout' %}" method=GET>
-                    {% csrf_token %}
-                    <input type=button value="Log out">
-                </form>
+                <a href="{% url 'logout' %}">Log out</a>
             {% else %} 
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'register' %}">Register</a>
