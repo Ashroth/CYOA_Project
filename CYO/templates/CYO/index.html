@@ -1,5 +1,13 @@
 {% extends 'CYO/layout.html' %}
 
 {% block body %}
-
+    {% for adventure in adventures %}
+        <div>
+            {{ adventure.title }} by: {{ adventure.user.username }}
+            {{ adventure.description }}
+            {% if request.user == adventure.user %}
+                <a href="{% url 'ad_edit' adventure.id %}">Edit</a>
+            {% endif %}
+        </div>
+    {% endfor %}
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends 'CYO/layout.html' %}
 
+<h1>{{ type }}</h1>
 {% block body %}
-<form action="{% url 'create' %}" method=POST>
+<form action="{{ request.path }}" method=POST>
     {% csrf_token %}
     {% for field in form %}
     {{field.label}}: {{ field }}

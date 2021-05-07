@@ -2,8 +2,10 @@
 
 {% block body %}
 {{ adventure.title }} <br>
-Created by: {{ adventure.user }}
+Created by: {{ adventure.user }} <br>
 {{ adventure.description }} <br>
-{% for event in adventure.Events %}
-    <a href="{% url 'ev_edit' av_index = adventure.id ev_index = event.id %}"></a>{{ event.title }}
+<a href="{% url 'event_create' adventure.id %}">Create event</a> <br>
+{% for event in adventure.Events.all %}
+    <a href="{% url 'ev_edit' event.id %}">{{ event.title }}</a><br>
+{% endfor %}
 {% endblock %}

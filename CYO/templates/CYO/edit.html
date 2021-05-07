@@ -1,5 +1,14 @@
 {% extends 'CYO/layout.html' %}
 
 {% block body %}
-
+<a href="{% url 'ad_edit' event.adventure.id %}">Back to adventure edit</a><br>
+<h2>{{ event.title }}</h2>
+<span>
+    {{ event.text}}
+</span>
+<br>
+{% for choice in event.Start.all %}
+    {{ choice.text }} {% if choice.condition != Null %}: {{ choice.condition }} {% endif %}<br>
+{% endfor %}
+<a href="{% url 'choice_create' event.id %}">Add a choice</a>
 {% endblock %}

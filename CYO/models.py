@@ -14,6 +14,8 @@ class Event(models.Model):
     adventure = models.ForeignKey("Adventure", on_delete=models.CASCADE, related_name="Events")
     text = models.TextField()
     title = models.TextField(max_length=255)
+    def __str__(self):
+        return '%s' %self.title
 
 class Adventure(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="Creations")
