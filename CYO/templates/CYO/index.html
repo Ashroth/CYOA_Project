@@ -3,7 +3,7 @@
 {% block body %}
     {% for adventure in adventures %}
         <div>
-            {{ adventure.title }} by: {{ adventure.user.username }}
+            <a href="{% url 'ad_view' adventure.id %}">{{ adventure.title }}</a> by: {{ adventure.user.username }}
             {{ adventure.description }}
             {% if request.user == adventure.user %}
                 <a href="{% url 'ad_edit' adventure.id %}">Edit</a>

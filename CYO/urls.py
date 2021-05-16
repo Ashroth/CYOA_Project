@@ -10,5 +10,7 @@ urlpatterns = [
     path('create/<int:ad_index>', views.event_create_view, name='event_create'),
     path('create/choice/<int:event_index>', views.choice_create_view, name='choice_create'),
     path('edit/<int:ad_index>', views.adventure_edit_view, name='ad_edit'),
-    path('edit/event/<int:event_index>', views.event_edit_view, name='ev_edit')
+    path('edit/event/<int:event_index>', views.event_edit_view, name='ev_edit'),
+    path('adventure/<int:adventure_index>', views.adventure_view, name='ad_view'),
+    path('adventure/event/<int:event_index>', views.adventure_event_view, name='ad_event_view')
 ]

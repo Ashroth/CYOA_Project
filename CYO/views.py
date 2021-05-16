@@ -123,10 +123,40 @@ def event_edit_view(request, event_index):
             "event": event
         })
 
+def adventure_view(request, adventure_index):
+    if request.method == "GET":
+        try:
+            adventure = Adventure.objects.get(id = adventure_index)
+        except Adventure.DoesNotExist:
+            return render(request, 'CYO/error.html',
+            {
+                "message": "No such adventure"
+            })
+        return render(request, 'CYO/adventure_view.html', 
+        {
+            "adventure": adventure
+        })
+
+def adventure_event_view(request, event_index):
+    if request.method == "GET":
+        try:
+            event = Event.objects.get(id = event_index)
+        except Event.DoesNotExist:
+            return JsonResponse(status = 404
+            )
+        choices_temp = event.Start.all()
+        choices = []
+        for choice in choices_temp:
+            choices.append([choice.final.id, choice.text, choice.condition_amount])
+        return JsonResponse({
+            "title": event.title,
+            "text": event.text,
+            "choices": choices
+        }, status = 200)
 
 def login_view(request):
     if request.method == "GET":
-        return render(request, "login.html")
+        return render(request, "CYO/login.html")
     elif request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]

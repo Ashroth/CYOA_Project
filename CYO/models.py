@@ -23,3 +23,18 @@ class Adventure(models.Model):
     description = models.TextField()
     startevent = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, related_name="First_screen")
     endevent = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, related_name="End_screen")
+
+class Item(models.Model):
+    status = 'Stat'
+    item = 'Item'
+    hidden_trigger = 'hidden'
+    initialization = 'Init'
+    ITEM_TYPE_CHOICES = [
+        (status, 'Status'),
+        (item, 'Item'),
+        (hidden_trigger, 'Hidden_Trigger'),
+        (initialization, 'Initialization')
+    ]
+    name = models.TextField(max_length=64)
+    type = models.CharField(choices = ITEM_TYPE_CHOICES, default = status)
+    amount = models.IntegerField()
