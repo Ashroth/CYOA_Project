@@ -7,8 +7,17 @@
     {{ event.text}}
 </span>
 <br>
+<a href="{% url 'item_create' event.id %}">Add item to event</a><br>
 {% for choice in event.Start.all %}
-    {{ choice.text }} {% if choice.condition != Null %}: {{ choice.condition }} {% endif %}<br>
+    {{ choice.text }} 
+    {% if choice.Conditions.all != Null %}: 
+        <ul>
+            {% for condition in choice.Conditions.all %} 
+            <li>{{ condition.name }} ({{ condition.amount }})</li>
+            {% endfor %}
+        </ul>
+    {% endif %}<br>
+    <a href="{% url 'condition_create' choice.id %}">Add condition</a>
 {% endfor %}
 <a href="{% url 'choice_create' event.id %}">Add a choice</a>
 {% endblock %}

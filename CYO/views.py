@@ -4,7 +4,7 @@ from django.db import IntegrityError, models
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User, Adventure, Event, Choice
+from .models import User, Adventure, Event, Choice, Item
 
 class new_Adventure(forms.ModelForm):
     class Meta:
@@ -22,7 +22,13 @@ class new_Choice(forms.ModelForm):
     class Meta:
         model = Choice
         exclude = ['initial']
-        fields = ['text', 'condition_amount', 'final']
+        fields = ['text', 'final']
+
+class new_Item(forms.ModelForm):
+    class Meta:
+        model = Item
+        exclude = ["event", "choice", "adventure"]
+        fields = ["name", "amount", "type", "hidden"]
 
 def index_view(request):
     if request.method == "GET":
@@ -53,8 +59,6 @@ def create_view(request):
             adventure.startevent = first_event
             adventure.endevent = last_event
             adventure.save()
-            choice = Choice(initial = last_event, final = first_event, condition_amount = 0, text = "Back to the start screen")
-            choice.save()
             return HttpResponseRedirect(reverse('ad_edit', kwargs = {'ad_index': adventure.id}))
 
 def event_create_view(request, ad_index):
@@ -75,6 +79,56 @@ def event_create_view(request, ad_index):
             return render(request, 'CYO/error.html', {
                 "message": "Faulty form"
             })
+
+def event_item_view(request, event_index):
+    if request.method == "GET":
+        form = new_Item()
+        return render(request, 'CYO/create.html', {
+            "form": form,
+            "type": "Add an item to the event"
+        })
+    if request.method == "POST":
+        item = new_Item(request.POST)
+        if item.is_valid:
+            item = item.save(commit = False)
+            try:
+                event = Event.objects.get(id = event_index)
+            except Event.DoesNotExist:
+                return render(request, 'CYO/error.html', {
+                    "message": "No such event"
+                })
+            item.event = event
+            item.adventure = item.event.adventure
+            item.save()
+            return HttpResponseRedirect(reverse('ev_edit', kwargs = {'event_index': event_index}))
+        return render(request, 'CYO/error.html', {
+            "message": "Faulty form"
+        })
+
+def choice_item_view(request, choice_index):
+    if request.method == "GET":
+        form = new_Item()
+        return render(request, 'CYO/create.html', {
+            "form": form,
+            "type": "Add an item requirement to the choice"
+        })
+    if request.method == "POST":
+        item = new_Item(request.POST)
+        if item.is_valid:
+            item = item.save(commit = False)
+            try:
+                choice = Choice.objects.get(id = choice_index)
+            except Choice.DoesNotExist:
+                return render(request, 'CYO/error.html', {
+                    "message": "No such choice"
+                })
+            item.choice = choice
+            item.adventure = choice.initial.adventure
+            item.save()
+            return HttpResponseRedirect(reverse('ev_edit', kwargs = {'event_index': choice.initial.id}))
+        return render(request, 'CYO/error.html', {
+            "message": "Faulty form"
+        })
 
 def choice_create_view(request, event_index):
     if request.method == "GET":
@@ -147,10 +201,19 @@ def adventure_event_view(request, event_index):
         choices_temp = event.Start.all()
         choices = []
         for choice in choices_temp:
-            choices.append([choice.final.id, choice.text, choice.condition_amount])
+            conditions_temp = choice.conditions.all()
+            conditions = []
+            for condition in conditions_temp:
+                conditions.append([condition.serialize()])
+            choices.append([choice.final.id, choice.text, conditions])
+        items_temp = event.Items.all()
+        items = []
+        for item in items_temp:
+            items.append(item.serialize())
         return JsonResponse({
             "title": event.title,
             "text": event.text,
+            "items": items,
             "choices": choices
         }, status = 200)
 

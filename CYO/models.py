@@ -7,7 +7,6 @@ class User(AbstractUser):
 class Choice(models.Model):
     initial = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="Start")
     final = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="End")
-    condition_amount = models.IntegerField(default=0)
     text = models.TextField()
 
 class Event(models.Model):
@@ -25,16 +24,27 @@ class Adventure(models.Model):
     endevent = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, related_name="End_screen")
 
 class Item(models.Model):
-    status = 'Stat'
+    status = 'Status'
     item = 'Item'
-    hidden_trigger = 'hidden'
-    initialization = 'Init'
+    hidden_trigger = 'Hidden'
     ITEM_TYPE_CHOICES = [
         (status, 'Status'),
         (item, 'Item'),
-        (hidden_trigger, 'Hidden_Trigger'),
-        (initialization, 'Initialization')
+        (hidden_trigger, 'Hidden Trigger')
     ]
     name = models.TextField(max_length=64)
-    type = models.CharField(choices = ITEM_TYPE_CHOICES, default = status)
+    type = models.CharField(choices = ITEM_TYPE_CHOICES, default = status, max_length=64)
+    hidden = models.BooleanField(default = False)
     amount = models.IntegerField()
+    adventure = models.ForeignKey("Adventure", on_delete=models.CASCADE, null=True, related_name="All_Items")
+    event = models.ForeignKey("Event", on_delete=models.CASCADE, null=True, related_name="Items")
+    choice = models.ForeignKey("Choice", on_delete=models.CASCADE, null=True, related_name="Conditions")
+
+    @property
+    def serialize(self):
+        return {
+            "name": self.name,
+            "type": self.type,
+            "hidden": self.hidden,
+            "amount": self.amount
+        }
