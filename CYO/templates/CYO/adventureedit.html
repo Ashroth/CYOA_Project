@@ -5,6 +5,7 @@
 Created by: {{ adventure.user }} <br>
 {{ adventure.description }} <br>
 <a href="{% url 'event_create' adventure.id %}">Create event</a> <br>
+<a href="{% url 'item_add' adventure.id %}">Add item</a> <br>
 {% for event in adventure.Events.all %}
     <a href="{% url 'ev_edit' event.id %}">{{ event.title }}</a><br>
 {% endfor %}

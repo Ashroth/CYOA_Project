@@ -9,6 +9,7 @@ urlpatterns = [
     path('create/', views.create_view, name='create'),
     path('create/<int:ad_index>', views.event_create_view, name='event_create'),
     path('create/choice/<int:event_index>', views.choice_create_view, name='choice_create'),
+    path('add/item/<int:ad_index>', views.item_add_view, name='item_add'),
     path('create/item/<int:event_index>', views.event_item_view, name='item_create'),
     path('create/condition/<int:choice_index>', views.choice_item_view, name='condition_create'),
     path('edit/<int:ad_index>', views.adventure_edit_view, name='ad_edit'),

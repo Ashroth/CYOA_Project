@@ -4,7 +4,7 @@ from django.db import IntegrityError, models
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User, Adventure, Event, Choice, Item
+from .models import Item_Style, User, Adventure, Event, Choice, Item
 
 class new_Adventure(forms.ModelForm):
     class Meta:
@@ -27,8 +27,14 @@ class new_Choice(forms.ModelForm):
 class new_Item(forms.ModelForm):
     class Meta:
         model = Item
-        exclude = ["event", "choice", "adventure"]
-        fields = ["name", "amount", "type", "hidden"]
+        exclude = ["event", "choice"]
+        fields = ["item_style", "amount", "hidden"]
+
+class new_Item_Style(forms.ModelForm):
+    class Meta:
+        model = Item_Style
+        exclude = ["adventure"]
+        fields = ["name", "type"]
 
 def index_view(request):
     if request.method == "GET":
@@ -61,6 +67,25 @@ def create_view(request):
             adventure.save()
             return HttpResponseRedirect(reverse('ad_edit', kwargs = {'ad_index': adventure.id}))
 
+def item_add_view(request, ad_index):
+    if request.method == "GET":
+        form = new_Item_Style()
+        return render(request, 'CYO/create.html', {
+            "form": form,
+            "type": "Create an item type for this adventure"
+        })
+    if request.method == "POST":
+        item = new_Item_Style(request.POST)
+        if item.is_valid:
+            item = item.save(commit = False)
+            item.adventure = Adventure.objects.get(id = ad_index)
+            item.save()
+            return HttpResponseRedirect(reverse('ad_edit', kwargs = {'ad_index': ad_index}))
+        else:
+            return render(request, 'CYO/error.html', {
+                "message": "Invalid form"
+            })
+
 def event_create_view(request, ad_index):
     if request.method == "GET":
         form = new_Event()
@@ -82,7 +107,14 @@ def event_create_view(request, ad_index):
 
 def event_item_view(request, event_index):
     if request.method == "GET":
+        try:
+            adventure = Event.objects.get(id = event_index).adventure
+        except Event.DoesNotExist:
+                return render(request, 'CYO/error.html', {
+                    "message": "No such event"
+                })
         form = new_Item()
+        form.fields['item_style'] = forms.ModelChoiceField(queryset = Item_Style.objects.filter(adventure = adventure))
         return render(request, 'CYO/create.html', {
             "form": form,
             "type": "Add an item to the event"
@@ -101,31 +133,6 @@ def event_item_view(request, event_index):
             item.adventure = item.event.adventure
             item.save()
             return HttpResponseRedirect(reverse('ev_edit', kwargs = {'event_index': event_index}))
-        return render(request, 'CYO/error.html', {
-            "message": "Faulty form"
-        })
-
-def choice_item_view(request, choice_index):
-    if request.method == "GET":
-        form = new_Item()
-        return render(request, 'CYO/create.html', {
-            "form": form,
-            "type": "Add an item requirement to the choice"
-        })
-    if request.method == "POST":
-        item = new_Item(request.POST)
-        if item.is_valid:
-            item = item.save(commit = False)
-            try:
-                choice = Choice.objects.get(id = choice_index)
-            except Choice.DoesNotExist:
-                return render(request, 'CYO/error.html', {
-                    "message": "No such choice"
-                })
-            item.choice = choice
-            item.adventure = choice.initial.adventure
-            item.save()
-            return HttpResponseRedirect(reverse('ev_edit', kwargs = {'event_index': choice.initial.id}))
         return render(request, 'CYO/error.html', {
             "message": "Faulty form"
         })
@@ -151,7 +158,38 @@ def choice_create_view(request, event_index):
         return render(request, 'CYO/error.html', {
             "message": "Faulty form"
         })
-        
+
+def choice_item_view(request, choice_index):
+    if request.method == "GET":
+        try:
+            adventure = Choice.objects.get(id = choice_index).initial.adventure
+        except Choice.DoesNotExist:
+                return render(request, 'CYO/error.html', {
+                    "message": "No such choice"
+                })
+        form = new_Item()
+        form.fields['item_style'] = forms.ModelChoiceField(queryset = Item_Style.objects.filter(adventure = adventure))
+        return render(request, 'CYO/create.html', {
+            "form": form,
+            "type": "Add an item requirement to the choice"
+        })
+    if request.method == "POST":
+        item = new_Item(request.POST)
+        if item.is_valid:
+            item = item.save(commit = False)
+            try:
+                choice = Choice.objects.get(id = choice_index)
+            except Choice.DoesNotExist:
+                return render(request, 'CYO/error.html', {
+                    "message": "No such choice"
+                })
+            item.choice = choice
+            item.adventure = choice.initial.adventure
+            item.save()
+            return HttpResponseRedirect(reverse('ev_edit', kwargs = {'event_index': choice.initial.id}))
+        return render(request, 'CYO/error.html', {
+            "message": "Faulty form"
+        })
 
 def adventure_edit_view(request, ad_index):
     if request.method == "GET":

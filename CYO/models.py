@@ -20,10 +20,10 @@ class Adventure(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="Creations")
     title = models.TextField(max_length=255)
     description = models.TextField()
-    startevent = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, related_name="First_screen")
+    startevent = models.ForeignKey("Event", on_delete=models.CASCADE, null=True, related_name="First_screen")
     endevent = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, related_name="End_screen")
 
-class Item(models.Model):
+class Item_Style(models.Model):
     status = 'Status'
     item = 'Item'
     hidden_trigger = 'Hidden'
@@ -34,9 +34,12 @@ class Item(models.Model):
     ]
     name = models.TextField(max_length=64)
     type = models.CharField(choices = ITEM_TYPE_CHOICES, default = status, max_length=64)
+    adventure = models.ForeignKey("Adventure", on_delete=models.CASCADE, null=True, related_name="All_Items")
+
+class Item(models.Model):
+    item_style = models.ForeignKey("Item_Style", on_delete=models.CASCADE, related_name="Instances")
     hidden = models.BooleanField(default = False)
     amount = models.IntegerField()
-    adventure = models.ForeignKey("Adventure", on_delete=models.CASCADE, null=True, related_name="All_Items")
     event = models.ForeignKey("Event", on_delete=models.CASCADE, null=True, related_name="Items")
     choice = models.ForeignKey("Choice", on_delete=models.CASCADE, null=True, related_name="Conditions")
 
