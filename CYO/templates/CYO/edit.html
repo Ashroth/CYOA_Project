@@ -7,13 +7,18 @@
     {{ event.text}}
 </span>
 <br>
+<span>
+    {% for item in event.Items.all %}
+        {{ item.itemstyle.name }} ({{item.amount}}), {{ item.itemstyle.type }} <br>
+    {% endfor %} 
+</span>
 <a href="{% url 'item_create' event.id %}">Add item to event</a><br>
 {% for choice in event.Start.all %}
     {{ choice.text }} 
     {% if choice.Conditions.all != Null %}: 
         <ul>
             {% for condition in choice.Conditions.all %} 
-            <li>{{ condition.name }} ({{ condition.amount }})</li>
+            <li>{{ condition.itemstyle.name }} ({{ condition.amount }})</li>
             {% endfor %}
         </ul>
     {% endif %}<br>

@@ -1,7 +1,9 @@
 {% extends 'CYO/layout.html' %}
 
 {% block body %}
+<h1 id="title">
 {{ adventure.title }} <br>
+</h1>
 Created by: {{ adventure.user }} <br>
 {{ adventure.description }} <br>
 <a href="{% url 'event_create' adventure.id %}">Create event</a> <br>

@@ -23,7 +23,7 @@ class Adventure(models.Model):
     startevent = models.ForeignKey("Event", on_delete=models.CASCADE, null=True, related_name="First_screen")
     endevent = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, related_name="End_screen")
 
-class Item_Style(models.Model):
+class ItemStyle(models.Model):
     status = 'Status'
     item = 'Item'
     hidden_trigger = 'Hidden'
@@ -35,9 +35,12 @@ class Item_Style(models.Model):
     name = models.TextField(max_length=64)
     type = models.CharField(choices = ITEM_TYPE_CHOICES, default = status, max_length=64)
     adventure = models.ForeignKey("Adventure", on_delete=models.CASCADE, null=True, related_name="All_Items")
+    def __str__(this):
+        return this.name
+
 
 class Item(models.Model):
-    item_style = models.ForeignKey("Item_Style", on_delete=models.CASCADE, related_name="Instances")
+    itemstyle = models.ForeignKey("ItemStyle", on_delete=models.CASCADE, related_name="Instances")
     hidden = models.BooleanField(default = False)
     amount = models.IntegerField()
     event = models.ForeignKey("Event", on_delete=models.CASCADE, null=True, related_name="Items")
@@ -46,8 +49,8 @@ class Item(models.Model):
     @property
     def serialize(self):
         return {
-            "name": self.name,
-            "type": self.type,
+            "name": self.itemstyle.name,
+            "type": self.itemstyle.type,
             "hidden": self.hidden,
             "amount": self.amount
         }

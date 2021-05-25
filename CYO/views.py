@@ -4,7 +4,7 @@ from django.db import IntegrityError, models
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import Item_Style, User, Adventure, Event, Choice, Item
+from .models import User, Adventure, Event, Choice, Item, ItemStyle
 
 class new_Adventure(forms.ModelForm):
     class Meta:
@@ -28,11 +28,11 @@ class new_Item(forms.ModelForm):
     class Meta:
         model = Item
         exclude = ["event", "choice"]
-        fields = ["item_style", "amount", "hidden"]
+        fields = ["itemstyle", "amount", "hidden"]
 
-class new_Item_Style(forms.ModelForm):
+class new_ItemStyle(forms.ModelForm):
     class Meta:
-        model = Item_Style
+        model = ItemStyle
         exclude = ["adventure"]
         fields = ["name", "type"]
 
@@ -43,7 +43,7 @@ def index_view(request):
         "adventures": adventures
     })
 
-def create_view(request):
+def adventure_create_view(request):
     if request.method == "GET":
         if not request.user.is_authenticated:
             return HttpResponseRedirect(reverse('login'))
@@ -65,17 +65,19 @@ def create_view(request):
             adventure.startevent = first_event
             adventure.endevent = last_event
             adventure.save()
+            item = ItemStyle(name = "Health", type = "Status", adventure = adventure)
+            item.save()
             return HttpResponseRedirect(reverse('ad_edit', kwargs = {'ad_index': adventure.id}))
 
 def item_add_view(request, ad_index):
     if request.method == "GET":
-        form = new_Item_Style()
+        form = new_ItemStyle()
         return render(request, 'CYO/create.html', {
             "form": form,
             "type": "Create an item type for this adventure"
         })
     if request.method == "POST":
-        item = new_Item_Style(request.POST)
+        item = new_ItemStyle(request.POST)
         if item.is_valid:
             item = item.save(commit = False)
             item.adventure = Adventure.objects.get(id = ad_index)
@@ -114,7 +116,7 @@ def event_item_view(request, event_index):
                     "message": "No such event"
                 })
         form = new_Item()
-        form.fields['item_style'] = forms.ModelChoiceField(queryset = Item_Style.objects.filter(adventure = adventure))
+        form.fields['itemstyle'] = forms.ModelChoiceField(queryset = ItemStyle.objects.filter(adventure = adventure))
         return render(request, 'CYO/create.html', {
             "form": form,
             "type": "Add an item to the event"
@@ -168,7 +170,7 @@ def choice_item_view(request, choice_index):
                     "message": "No such choice"
                 })
         form = new_Item()
-        form.fields['item_style'] = forms.ModelChoiceField(queryset = Item_Style.objects.filter(adventure = adventure))
+        form.fields['itemstyle'] = forms.ModelChoiceField(queryset = ItemStyle.objects.filter(adventure = adventure))
         return render(request, 'CYO/create.html', {
             "form": form,
             "type": "Add an item requirement to the choice"
@@ -239,15 +241,15 @@ def adventure_event_view(request, event_index):
         choices_temp = event.Start.all()
         choices = []
         for choice in choices_temp:
-            conditions_temp = choice.conditions.all()
+            conditions_temp = choice.Conditions.all()
             conditions = []
             for condition in conditions_temp:
-                conditions.append([condition.serialize()])
+                conditions.append(condition.serialize)
             choices.append([choice.final.id, choice.text, conditions])
         items_temp = event.Items.all()
         items = []
         for item in items_temp:
-            items.append(item.serialize())
+            items.append(item.serialize)
         return JsonResponse({
             "title": event.title,
             "text": event.text,
