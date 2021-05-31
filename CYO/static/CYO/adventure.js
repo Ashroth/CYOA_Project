@@ -5,6 +5,46 @@ let player = {
 };
 
 let conditions = [];
+function inventory(type)
+{
+    const stat = document.querySelector('#text_' + type)
+    stat.innerText = ""
+    for (let key in player[type])
+    {
+        stat.innerText += key +': (' + player[type][key] + ")\n";
+    }
+}
+
+function show(type)
+{
+    const main = document.querySelector("#main");
+    const side = document.querySelector('#' + type);
+    const button = document.querySelector("#" + type + "_button");
+    let other_button = null;
+    if (type == "Items")
+    {
+        other_button = document.querySelector("#Status_button");
+    }
+    else
+    {
+        other_button = document.querySelector("#Items_button");
+    }
+    if (main.getAttribute('hidden') == True)
+    {
+        other_button.setAttribute('disabled', 'False');
+        button.innerHTML = type;
+        main.setAttribute('hidden', 'False');
+        side.setAttribute('hidden', 'True');
+    }
+    else
+    {
+        other_button.setAttribute('disabled', 'True');
+        button.innerHTML = "Back";
+        main.setAttribute('hidden', 'True');
+        inventory(type);
+        side.setAttribute('hidden', 'False');
+    }
+}
 
 function item_handler(inventory_name, item)
 {

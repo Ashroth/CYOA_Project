@@ -1,0 +1,10 @@
+{% extends 'CYO/layout.html' %}
+
+{% block body %}
+Are you sure? This action will delete the object and all objects subordinate to it. This can not be undone.
+<form action="{% url 'edit' type index %}" method="POST">
+    {% csrf_token %}
+    <input hidden=true name="delete" value = true>
+    <button type=submit>Delete</button>
+</form>
+{% endblock %}

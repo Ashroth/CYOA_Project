@@ -1,14 +1,40 @@
 {% extends 'CYO/layout.html' %}
 
 {% block body %}
-<div id='title'>
-    <h2>
-        {{ adventure.title }}
-    </h2>
+<div id='main_view'>
+    <div id='title'>
+        <h2>
+            {{ adventure.title }}
+        </h2>
+    </div>
+    Created by: {{ adventure.user }} <br>
+    <div id='text'>
+        {{ adventure.description }} <br>
+        <button onclick="adventure('{{adventure.startevent.id}}')">Start!</button>
+    </div>
+    <div id='controls'>
+        <button id='Items_button' onclick="showInventory('Items')">Inventory</button>
+        <button id='Status_button' onclick="show('Status')">Status</button>
+    </div>
 </div>
-Created by: {{ adventure.user }} <br>
-<div id='text'>
-    {{ adventure.description }} <br>
-    <button onclick="adventure('{{adventure.startevent.id}}')">Start!</button>
+<div id='Status' hidden=True>
+    <div id='title_stat'>
+        <h2>
+            Status
+        </h2>
+        <div id='text_Status'>
+
+        </div>
+    </div>
+</div>
+<div id='Items' hidden=True>
+    <div id='title_inv'>
+        <h2>
+            Inventory
+        </h2>
+        <div id='text_Items'>
+            
+        </div>
+    </div>
 </div>
 {% endblock %}"
