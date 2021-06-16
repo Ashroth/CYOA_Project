@@ -3,31 +3,76 @@ body {
     width:50%;
     padding-top:1%;
     align-items: center;
+    background-color:peru;
 }
-#navigation {
+#navigation, #adv_edit, #adv_dele, #adv_dele_s{
     background-color: bisque;
     border-radius:15px;
     text-align:center;
 }
-#title {
-    background-color:palevioletred;
-    color:darkslateblue;
-}
-#event_text {
-    background-color:lightseagreen;
-    margin:15px;
+#adv_edit, #adv_dele{
     padding:5px;
-    border-radius:10px;
+    text-transform: capitalize;
+    font-size:large;
+    font-style: normal;
 }
-#item, #events, #event_choices {
+#adv_dele_s{
+    padding: 3px;
+    font-size:small;
+    font-style: normal;
+}
+#title {
+    background-color:salmon;
+    color:black;
+    padding: 5px;
+    text-align: center;
+    margin-top: 5px;
+}
+#text, #title_inv, #title_stat{
+    background-color:salmon;
+    padding: 5px;
+}
+#text, #adventure_description, #text_Item, #text_Status {
+    white-space: pre-line;
+    word-wrap: break-word;
+}
+h2, h1{
+    background-color: tomato;
+    color:black;
+    text-align: center;
+    padding: 5px;
+    border-radius: 10px;
+    word-wrap: break-word;
+}
+#controls {
+    padding:5px;
+    background-color:bisque;
+}
+#item, #events, #event_choices, #items_edit {
     padding:10px;
     margin:10px;
     border-radius: 10px;
     background-color: orange;
+    word-wrap: break-word;
 }
 #delete {
     border-color: red;
     color: red;
-    border-radius: 4px;
-    border-width: 4px;
+    border-width: 2px;
+    border-style: dashed;
+}
+#adventure_preview {
+    border-radius: 5px;
+    background-color: orange;
+    padding: 5px;
+    padding-left: 10px;
+}
+a {
+    color:midnightblue;
+    font-style: oblique;
+}
+button {
+    background-color: orange;
+    border-radius: 5px;
+    word-wrap: break-word;
 }

@@ -11,38 +11,46 @@ function inventory(type)
     stat.innerText = ""
     for (let key in player[type])
     {
-        stat.innerText += key +': (' + player[type][key] + ")\n";
+        stat.innerHTML += key +': (' + player[type][key] + ")<br>";
+    }
+    if (stat.innerText == "")
+    {
+        stat.style.display = 'none';
+    }
+    else
+    {
+        stat.style.display = 'block';
     }
 }
 
 function show(type)
 {
-    const main = document.querySelector("#main");
+    const main = document.querySelector("#main_view");
     const side = document.querySelector('#' + type);
     const button = document.querySelector("#" + type + "_button");
     let other_button = null;
-    if (type == "Items")
+    if (type == "Item")
     {
         other_button = document.querySelector("#Status_button");
     }
     else
     {
-        other_button = document.querySelector("#Items_button");
+        other_button = document.querySelector("#Item_button");
     }
-    if (main.getAttribute('hidden') == True)
+    if (main.style.display == 'none')
     {
-        other_button.setAttribute('disabled', 'False');
+        other_button.style.display = 'inline';
         button.innerHTML = type;
-        main.setAttribute('hidden', 'False');
-        side.setAttribute('hidden', 'True');
+        main.style.display = 'block';
+        side.style.display = 'none';
     }
     else
     {
-        other_button.setAttribute('disabled', 'True');
+        other_button.style.display = 'none';
         button.innerHTML = "Back";
-        main.setAttribute('hidden', 'True');
+        main.style.display = 'none';
         inventory(type);
-        side.setAttribute('hidden', 'False');
+        side.style.display = 'inline';
     }
 }
 
@@ -61,23 +69,23 @@ function item_handler(inventory_name, item)
     if (player[inventory_name][item.name] < 0)
     {
         player[inventory_name][item.name] == 0;
-        too_many = True;
+        too_many = true;
     }
     if (item.type != "Hidden" && !item.hidden)
     {
         if (item.amount > 0)
         {
-            output_text += `<b>Gained ${item.amount} ${item.name}</b> \n`;
+            output_text += `<b>Gained ${item.amount} ${item.name}</b> <br>`;
         }
         else if (item.amount < 0)
         {
             if (too_many)
             {
-                output_text += `You have lost all of your ${item.name} \n`;
+                output_text += `You have lost all of your ${item.name} <br>`;
             }
             else
             {
-                output_text += `Lost ${item.amount} ${item.name} \n`;
+                output_text += `Lost ${item.amount} ${item.name} <br>`;
             }
         }
     }
@@ -87,18 +95,18 @@ function item_handler(inventory_name, item)
 function conditional_adventure(index, event_id)
 {
     let condition = conditions[index]
-    let message = "";
+    //let message = "";
     for (j in condition)
     {
         if (condition[j].amount = 0)
         {
-            message = `Lost all of your ${condition.name}\n`;
+            //message = `Lost all of your ${condition.name}<br>`;
             player[condition[j].type][condition[j].name] = 0;
         }
         else if (condition[j].amount < 0)
         {
-            player[condition[j].type][condition[j].name] += condition[j].amount;
-            message = `Lost ${condition.amount} ${condition.name}\n`;
+            //player[condition[j].type][condition[j].name] += condition[j].amount;
+            message = `Lost ${condition.amount} ${condition.name}<br>`;
         }
     }
     // ToDo: Message handling
@@ -107,7 +115,6 @@ function conditional_adventure(index, event_id)
 
 function condition_checker(condition)
 {
-    console.log(condition);
     if (!player[condition.type].hasOwnProperty(condition.name))
     {
         return [false, "You are missing something"];
@@ -117,15 +124,15 @@ function condition_checker(condition)
         let message = ""
         if (condition.type == "Item")
         {
-            message == `You need ${condition.amount} ${condition.name}\n`
+            message = `You need ${Math.abs(condition.amount)} ${condition.name}<br>`
         }
         else if (condition.type == "Status")
         {
-            message = `You are too weary to attempt this (${condition.amount} ${condition.name} required)\n`
+            message = `You are too weary to attempt this (${condition.amount} ${condition.name} required)<br>`
         }
         else if (condition.type == "Hidden")
         {
-            message = "Something is missing\n"
+            message = "Something is missing<br>"
         }
         if (player[condition.type][condition.name] < condition.amount || player[condition.type][condition.name] + condition.amount < 0)
         {
@@ -151,7 +158,7 @@ function adventure(event_id)
         }
         let title = document.querySelector("#title");
         let text = document.querySelector("#text");
-        title.innerHTML = `<h3>${response.title}</h3>`;
+        title.innerHTML = `<h2>${response.title}</h2>`;
         text.innerHTML = response.text;
         text.innerHTML += "<br>"
         for (j in response.items)
@@ -176,12 +183,10 @@ function adventure(event_id)
             for (i in response.choices)
             {
                 let choice = response.choices[i]
-                console.log(choice);
                 let choice_element = document.createElement('button');
                 if (choice[2].length > 0)
                 {
                     conditions[i] = choice[2];
-                    console.log(conditions[i]);
                     let open = true;
                     let variables = [];
                     let content = "";
@@ -218,7 +223,7 @@ function adventure(event_id)
             let ending = document.createElement('button');
             ending.setAttribute('onclick', 'location.reload()');
             ending.innerHTML = "Return to start";
-            text.append("You have failed in your quest! \n");
+            text.append("You have failed in your quest! <br>");
             text.append(ending);
         }
         else

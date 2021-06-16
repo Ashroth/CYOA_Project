@@ -12,13 +12,13 @@ class Choice(models.Model):
 class Event(models.Model):
     adventure = models.ForeignKey("Adventure", on_delete=models.CASCADE, related_name="Events")
     text = models.TextField()
-    title = models.TextField(max_length=255)
+    title = models.CharField(max_length=255)
     def __str__(self):
-        return '%s' %self.title
+        return '%s' %self.title[:64]
 
 class Adventure(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="Creations")
-    title = models.TextField(max_length=255)
+    title = models.CharField(max_length=255)
     description = models.TextField()
     startevent = models.ForeignKey("Event", on_delete=models.CASCADE, null=True, related_name="First_screen")
     endevent = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, related_name="End_screen")
@@ -32,7 +32,7 @@ class ItemStyle(models.Model):
         (item, 'Item'),
         (hidden_trigger, 'Hidden Trigger')
     ]
-    name = models.TextField(max_length=64)
+    name = models.CharField(max_length=64)
     type = models.CharField(choices = ITEM_TYPE_CHOICES, default = status, max_length=64)
     adventure = models.ForeignKey("Adventure", on_delete=models.CASCADE, null=True, related_name="All_Items")
     def __str__(this):

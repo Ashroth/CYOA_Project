@@ -166,6 +166,7 @@ def event_edit_view(request, index):
                 "message": "Only the creator may view this"
             })
 
+@login_required
 def event_item_view(request, event_index):
     if request.method == "GET":
         try:
@@ -201,6 +202,7 @@ def event_item_view(request, event_index):
         })
 
 # Choice creation code
+@login_required
 def choice_create_view(request, event_index):
     if request.method == "GET":
         adventure = Event.objects.get(id = event_index).adventure
@@ -230,7 +232,8 @@ def choice_create_view(request, event_index):
                 "form": choice,
                 "message": "Faulty form"
             })
-        
+
+@login_required
 def choice_item_view(request, choice_index):
     if request.method == "GET":
         try:
@@ -266,6 +269,7 @@ def choice_item_view(request, choice_index):
             })
 
 # Main display code
+@login_required
 def adventure_view(request, adventure_index):
     if request.method == "GET":
         try:
@@ -280,6 +284,7 @@ def adventure_view(request, adventure_index):
             "adventure": adventure
         })
 
+@login_required
 def adventure_event_view(request, event_index):
     if request.method == "GET":
         try:
@@ -349,17 +354,19 @@ def register_view(request):
         login(request, user)
         return HttpResponseRedirect(reverse('index'))
 
+@login_required
 def delete_view(request, type, index):
     if request.method == "GET":
         if type == "event":
             event = Event.objects.get(id = index)
-            if event == event.adventure.startevent:
+            if event == event.adventure.startevent or event == event.adventure.endevent:
                 return HttpResponseRedirect(reverse('ad_edit', kwargs = {'index': event.adventure.id}))
         return render(request, 'CYO/delete.html', {
             "type": type,
             "index": index,
         })
-        
+
+@login_required
 def generic_edit(request, type, index):
     if request.method == "POST" and request.POST.get('delete', None) is not None:
         delete = True
@@ -395,6 +402,8 @@ def generic_edit(request, type, index):
             else:
                 path = 'ad_edit'
                 args = instance.adventure.id
+                if instance.adventure.startevent == instance or instance.adventure.endevent == instance:
+                    return HttpResponseRedirect(reverse('ad_edit', kwargs = {'index': instance.adventure.id}))
         elif request.method == "GET":
             form = new_Event(instance = instance)
     elif type == "itemstyle":
@@ -453,12 +462,12 @@ def generic_edit(request, type, index):
     if request.method == "GET":
         if user == request.user:
             return render(request, 'CYO/create.html', {
-                "type": "Edit" + type,
+                "type": "Edit " + type,
                 "form": form
             })
         else:
             return render(request, 'CYO/create.html', {
-                "type": "Edit" + type,
+                "type": "Edit " + type,
                 "message": "Only the creator of the adventure may edit the adventure and its components"
             })
     if request.method == "POST":
@@ -471,7 +480,7 @@ def generic_edit(request, type, index):
                 return HttpResponseRedirect(reverse(path, kwargs= { 'index': args}))
             else:
                 return render(request, 'CYO/create.html', {
-                    "type": "Edit" + type,
+                    "type": "Edit " + type,
                     "form": object,
                     "message": "Invalid form, please fix"
                 })

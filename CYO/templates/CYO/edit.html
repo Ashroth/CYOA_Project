@@ -2,31 +2,32 @@
 
 {% block body %}
 <a href="{% url 'ad_edit' event.adventure.id %}">Back to adventure edit</a><br>
-<h2 id="event_title">{{ event.title }}</h2>
-<div id="event_text">
-    {{ event.text}}
-</div>
-<form action="{% url 'edit' 'event' event.id %}" method=GET>
-    <button id="edit_button">Edit</button> <a href="{% url 'delete' 'event' event.id %}" id=delete>X</a>
-</form>
-Items: <br>
-<span>
+<div id=text><h1>{{ event.title }}</h1>{{ event.text}}</div>
+<br>
+<a href="{% url 'edit' 'event' event.id %}" id=adv_edit>Edit</a> <a href="{% url 'delete' 'event' event.id %}" id=adv_dele>Delete</a>
+<a id=adv_edit href="{% url 'item_create' event.id %}">Add item to event</a>
+<a id=adv_edit href="{% url 'choice_create' event.id %}">Add a choice</a> 
+<br>
+Items:
+{% if event.Items.all %}
+<div id=items_edit>
     {% for item in event.Items.all %}
         <a href="{% url 'edit' 'item' item.id %}">{{ item.itemstyle.name }}</a> (<span id="{{item.id}}_amount">{{ item.amount }}</span>), 
-        Type: {{ item.itemstyle.type }},  Hidden: {{ item.hidden }} <a href="{% url 'delete' 'item' item.id %}" id=delete>X</a><br>
+        Type: {{ item.itemstyle.type }},  Hidden: {{ item.hidden }} <a href="{% url 'delete' 'item' item.id %}" id=adv_dele_s>Delete</a><br>
     {% endfor %} 
-</span>
+</div>
+{% else %}
 <br>
-<a href="{% url 'item_create' event.id %}">Add item to event</a><br>
-<a href="{% url 'choice_create' event.id %}">Add a choice</a> <br>
+{% endif %}
+Choices:
 {% for choice in event.Start.all %}
 <div id="event_choices">
-    <a href="{% url 'edit' 'choice' choice.id %}">{{ choice.text }}</a> <a href="{% url 'delete' 'choice' choice.id %}" id=delete>X</a>
+    <a href="{% url 'edit' 'choice' choice.id %}">{{ choice.text }}</a> <a href="{% url 'delete' 'choice' choice.id %}" id=adv_dele_s>Delete</a>
     {% if choice.Conditions.all is not None %}: 
         <ul>
             {% for condition in choice.Conditions.all %} 
             <li><a href="{% url 'edit' 'item' condition.id %}">{{ condition.itemstyle.name }}</a> ({{ condition.amount }}) {{ condition.hidden }} 
-                <a href="{% url 'delete' 'item' condition.id %}" id=delete>X</a>
+                <a href="{% url 'delete' 'item' condition.id %}" id=adv_dele_s>Delete</a>
             </li>
             {% endfor %}
         </ul>
