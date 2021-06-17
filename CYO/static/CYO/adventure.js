@@ -115,7 +115,7 @@ function conditional_adventure(index, event_id)
     let condition = conditions[index]
     for (j in condition)
     {
-        if (condition[j].amount = 0)
+        if (condition[j].amount == 0)
         {
             player[condition[j].type][condition[j].name] = 0;
         }
@@ -237,7 +237,8 @@ function adventure(event_id)
             let ending = document.createElement('button');
             ending.setAttribute('onclick', 'location.reload()');
             ending.innerHTML = "Return to start";
-            text.append("You have failed in your quest! <br>");
+            text.append("You have failed in your quest!");
+            text.innerHTML += "<br>"
             text.append(ending);
         }
         else
@@ -246,7 +247,7 @@ function adventure(event_id)
             ending.setAttribute('onclick', 'location.reload()');
             ending.innerHTML = "Return to start";
             text.append("This is the end of your path. Start over?");
-            text.innerHTML += "<br>"
+            text.innerHTML += "<br>";
             text.append(ending);
         }
     });

@@ -1,12 +1,16 @@
 # CYOA_Project
 Final project for CS50W
+
+## Description
+This project is an online choose your own adventure creator and player. Users can, after registering, create their own adventures, composed of self-created events, items and choices.
+
 ## Distinctivness and Complexity
 My project can be divided into two parts: create and view.
 Create is the portion responsible for the creation, editing and deleteing of adventures and parts of adventures.
 The structure of the models in this project is thus:
 - Each adventure has events and items.
 - Each event has choices and may have items that may be hidden.
-- Each choice links up to two events together and may have conditions (this many of this item) that may be hidden
+- Each choice links up to two events from the adventure together and may have conditions (this many of this item) that may be hidden
 - Each item is either a status, an item or a hidden trigger and has to be named in the adventure context before they may be added to events.
 Thus my models create a structure distinct from the prior projects on this course. Further, my models allow the user to seperate them into visible changes that the user may see and hidden changes that do not show to the user.
 Therefore my project is also more complex than the prior projects.
@@ -66,7 +70,7 @@ The *templates* are not complicated:
 3. Write your title and summary
 4. Now you can add events and items to the adventure
 5. Clicking on the name of an event or an item opens allows you to edit them
-6. First event is the start event and the second is the end event. The end event doesn't need to be connected to anything if you use the health system; just reducing the players health to 0 is enough.
+6. First event is the start event and the second is the end event. The end event should be treated as the victory condition; reducing the players health to 0 or leaving them no choices are the failure conditions.
 7. Clicking on an events title opens up the events edit screen, where you can edit the particulars of that event, connecting it to other events or adding items.
 8. In the event edit screen, clicking on the text of a choice allows you to edit it.
 9. After you are done, just return to the index and your adventure will be visible.
@@ -75,4 +79,4 @@ The *templates* are not complicated:
 12. The inventory and status buttons will show you the players status and items. To return to the adventure from these views, just click the "back" button that has replaced the button you clicked.
 	
 ## Additional information:
-	As a final project, I found the scope of my work to be excellent; I could apply what I had learned and also practice the nitty-gritty details that had been previously been provided. My desired features also provided me with a chance to work on applying what I had learned further and also gave me several directions to further my study on the various features of django.
+	As a final project, I found the scope of my work to be excellent; I could apply what I had learned and also practice the nitty-gritty details that had been previously been provided. My desired features also provided me with a chance to work on applying what I had learned further and also gave me several directions to further my study on the various features of django. This project is also stored in another repository on the same github account that I send this from.
