@@ -269,7 +269,6 @@ def choice_item_view(request, choice_index):
             })
 
 # Main display code
-@login_required
 def adventure_view(request, adventure_index):
     if request.method == "GET":
         try:
@@ -284,7 +283,6 @@ def adventure_view(request, adventure_index):
             "adventure": adventure
         })
 
-@login_required
 def adventure_event_view(request, event_index):
     if request.method == "GET":
         try:

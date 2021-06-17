@@ -59,16 +59,30 @@ function item_handler(inventory_name, item)
     let output_text = "";
     if (player[inventory_name].hasOwnProperty(item.name))
     {
-        player[inventory_name][item.name] += item.amount;
+        if (item.amount != 0)
+        {
+            player[inventory_name][item.name] += item.amount;
+        }
+        else
+        {
+            player[inventory_name][item.name] = 0;
+        }
     }
     else
     {
-        player[inventory_name][item.name] = item.amount;
+        if (item.amount != 0)
+        {
+            player[inventory_name][item.name] = item.amount;
+        }
+        else
+        {
+            player[inventory_name][item.name] = 0;
+        }
     }
     let too_many = false;
     if (player[inventory_name][item.name] < 0)
     {
-        player[inventory_name][item.name] == 0;
+        player[inventory_name][item.name] = 0;
         too_many = true;
     }
     if (item.type != "Hidden" && !item.hidden)
@@ -88,6 +102,10 @@ function item_handler(inventory_name, item)
                 output_text += `Lost ${item.amount} ${item.name} <br>`;
             }
         }
+        else
+        {
+            output_text += `You have lost all of your ${item.name} <br>`;
+        }
     }
     return output_text
 }
@@ -95,21 +113,17 @@ function item_handler(inventory_name, item)
 function conditional_adventure(index, event_id)
 {
     let condition = conditions[index]
-    //let message = "";
     for (j in condition)
     {
         if (condition[j].amount = 0)
         {
-            //message = `Lost all of your ${condition.name}<br>`;
             player[condition[j].type][condition[j].name] = 0;
         }
         else if (condition[j].amount < 0)
         {
-            //player[condition[j].type][condition[j].name] += condition[j].amount;
-            message = `Lost ${condition.amount} ${condition.name}<br>`;
+            player[condition[j].type][condition[j].name] += condition[j].amount;
         }
     }
-    // ToDo: Message handling
     adventure(event_id);
 }
 
@@ -196,7 +210,7 @@ function adventure(event_id)
                         if (!variables[0])
                         {
                             open = false;
-                            content += variables[1];
+                            content += variables[1] + " ";
                         }
                     } 
                     if (open)
